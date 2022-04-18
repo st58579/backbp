@@ -1,6 +1,6 @@
 package cz.upce.carsharing.service;
 
-import cz.upce.carsharing.dto.*;
+import cz.upce.carsharing.model.dto.*;
 import cz.upce.carsharing.model.Car;
 import cz.upce.carsharing.model.Make;
 import cz.upce.carsharing.model.Type;
@@ -28,8 +28,8 @@ public class CarsharingService {
         return carsharingDao.getTypes();
     }
 
-    public List<Car> getAllCars(){
-        return carsharingDao.getAllCars();
+    public List<Car> getAllCars(Integer userId){
+        return carsharingDao.getAllCars(userId);
     }
 
     public void addCar(CarDto car) {
@@ -57,5 +57,22 @@ public class CarsharingService {
 
     public RentedCarResponse getRentedUserCars(Integer userId) {
         return carsharingDao.getRentedUserCars(userId);
+    }
+
+    public void addType(AddTypeRequest type) {
+        carsharingDao.addType(type);
+    }
+
+    public void addMake(AddMakeRequest make) {
+        carsharingDao.addMake(make);
+    }
+
+    public Car updateCarAvailability(UpdateCarAvailabilityRequest request) {
+        if(request.getAvailability() == 0){
+            carsharingDao.setCarUnavailable(request.getCarId());
+        } else {
+            carsharingDao.setCarAvailable(request.getCarId());
+        }
+        return carsharingDao.getCarById(request.getCarId());
     }
 }

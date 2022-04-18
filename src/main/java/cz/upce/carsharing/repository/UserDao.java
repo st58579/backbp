@@ -1,10 +1,12 @@
 package cz.upce.carsharing.repository;
 
-import cz.upce.carsharing.dto.RegistrationUserRequest;
-import cz.upce.carsharing.dto.UserDetailsDto;
+import cz.upce.carsharing.model.dto.ChangeRoleRequest;
+import cz.upce.carsharing.model.dto.RegistrationUserRequest;
+import cz.upce.carsharing.model.dto.UserDetailsDto;
 import cz.upce.carsharing.exceptions.DaoException;
 import cz.upce.carsharing.model.User;
 import cz.upce.carsharing.model.Wallet;
+import cz.upce.carsharing.model.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,9 @@ public class UserDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public List<User> getAllUsers() {
-        String query = "SELECT * FROM APP_USER";
-        List<User> foundUsers = jdbcTemplate.query(query, User.getUserMapper());
-        if (foundUsers.size() < 1) {
-            throw new DaoException("No users found");
-        }
+    public List<UserDto> getAllUsers() {
+        String query = "SELECT * FROM USER_DETAILS_VIEW ORDER BY ID_USER";
+        List<UserDto> foundUsers = jdbcTemplate.query(query, UserDto.getUserDtoMapper());
         return foundUsers;
     }
 
@@ -108,5 +107,11 @@ public class UserDao {
             throw new DaoException("Wallet with ID " + id + " not found");
         }
         return foundUsers.get(0);
+    }
+
+    public List<UserDto> changeUserRole(ChangeRoleRequest request) {
+        String query = "UPDATE APP_USER SET ID_ROLE = ? WHERE ID_USER = ?";
+        jdbcTemplate.update(query, request.getRole().equals("admin") ? 1 : 2, request.getIdUser());
+        return getAllUsers();
     }
 }

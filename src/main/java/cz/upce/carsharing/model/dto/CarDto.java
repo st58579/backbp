@@ -1,4 +1,4 @@
-package cz.upce.carsharing.dto;
+package cz.upce.carsharing.model.dto;
 
 import lombok.Data;
 
@@ -12,4 +12,6 @@ public class CarDto {
     private Integer idType;
     private String img;
     private Integer idUser;
+    private String transmission;
+    private String engine;
 }

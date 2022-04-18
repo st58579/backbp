@@ -1,6 +1,6 @@
 package cz.upce.carsharing.controller;
 
-import cz.upce.carsharing.dto.*;
+import cz.upce.carsharing.model.dto.*;
 import cz.upce.carsharing.model.Car;
 import cz.upce.carsharing.model.Make;
 import cz.upce.carsharing.model.Type;
@@ -16,11 +16,6 @@ import java.util.List;
 public class CarsharingController {
 
     private final CarsharingService carsharingService;
-
-    @GetMapping("/all")
-    public List<Car> getAllCars() {
-        return carsharingService.getAllCars();
-    }
 
     @PostMapping("/filter")
     public CarResponse getAllCarsPaginatedAndFiltered(@RequestBody CarFilteredRequest request) {
@@ -41,9 +36,9 @@ public class CarsharingController {
         return carsharingService.getRentedUserCars(userId);
     }
 
-    @GetMapping
-    public CarResponse getAllCarsPaginated() {
-        List<Car> cars = carsharingService.getAllCars();
+    @GetMapping("/all/{id}")
+    public CarResponse getAllCarsPaginated(@PathVariable(value ="id") Integer userId) {
+        List<Car> cars = carsharingService.getAllCars(userId);
         return new CarResponse(cars, cars.size());
     }
 
@@ -67,4 +62,18 @@ public class CarsharingController {
         carsharingService.addCar(car);
     }
 
+    @PostMapping(value = "/car/update/availability")
+    public Car updateCarAvailability(@RequestBody UpdateCarAvailabilityRequest request){
+        return carsharingService.updateCarAvailability(request);
+    }
+
+    @PostMapping(value = "/type/add")
+    public void addType(@RequestBody AddTypeRequest type){
+        carsharingService.addType(type);
+    }
+
+    @PostMapping(value = "/make/add")
+    public void addMake(@RequestBody AddMakeRequest make){
+        carsharingService.addMake(make);
+    }
 }

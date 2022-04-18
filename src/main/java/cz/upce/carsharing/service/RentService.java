@@ -1,6 +1,6 @@
 package cz.upce.carsharing.service;
 
-import cz.upce.carsharing.dto.RentCarRequest;
+import cz.upce.carsharing.model.dto.RentCarRequest;
 import cz.upce.carsharing.exceptions.RentCarException;
 import cz.upce.carsharing.model.Car;
 import cz.upce.carsharing.model.Wallet;
@@ -39,5 +39,9 @@ public class RentService {
 
         carsharingDao.payToUser((int) (days * car.getPricePerDay()), initiatorWallet, recipientWallet);
         rentCarDao.rentCar(request);
+    }
+
+    public void returnCar(Integer id) {
+        rentCarDao.returnCar(id);
     }
 }

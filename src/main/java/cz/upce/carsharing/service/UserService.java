@@ -1,8 +1,9 @@
 package cz.upce.carsharing.service;
 
-import cz.upce.carsharing.dto.RegistrationUserRequest;
-import cz.upce.carsharing.dto.UserDetailsDto;
-import cz.upce.carsharing.dto.UserDto;
+import cz.upce.carsharing.model.dto.ChangeRoleRequest;
+import cz.upce.carsharing.model.dto.RegistrationUserRequest;
+import cz.upce.carsharing.model.dto.UserDetailsDto;
+import cz.upce.carsharing.model.dto.UserDto;
 import cz.upce.carsharing.exceptions.ValidationException;
 import cz.upce.carsharing.model.User;
 import cz.upce.carsharing.model.Wallet;
@@ -34,7 +35,7 @@ public class UserService{
         return userDao.getUserById(userId).toUserDto();
     }
 
-    public List<User> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userDao.getAllUsers();
     }
 
@@ -58,5 +59,9 @@ public class UserService{
     }
     public Wallet getUserWallet(Integer id) {
         return userDao.getUserWallet(id);
+    }
+
+    public List<UserDto> changeUserRole(ChangeRoleRequest request) {
+        return userDao.changeUserRole(request);
     }
 }

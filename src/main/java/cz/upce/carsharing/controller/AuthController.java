@@ -1,10 +1,8 @@
 package cz.upce.carsharing.controller;
 
-import cz.upce.carsharing.dto.AuthenticationRequest;
-import cz.upce.carsharing.dto.AuthenticationResponse;
-import cz.upce.carsharing.dto.RegistrationUserRequest;
-import cz.upce.carsharing.dto.UserDto;
-import cz.upce.carsharing.exceptions.AuthCheckException;
+import cz.upce.carsharing.model.dto.AuthenticationRequest;
+import cz.upce.carsharing.model.dto.RegistrationUserRequest;
+import cz.upce.carsharing.model.dto.UserDto;
 import cz.upce.carsharing.model.User;
 import cz.upce.carsharing.security.JwtTokenProvider;
 import cz.upce.carsharing.service.UserService;
@@ -16,13 +14,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.security.auth.message.AuthException;
 
 @RestController
 @RequestMapping(value = "/api/auth")

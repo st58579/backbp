@@ -1,31 +1,29 @@
 package cz.upce.carsharing.model;
 
-import cz.upce.carsharing.dto.UserDto;
+import cz.upce.carsharing.model.dto.UserDto;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 @NoArgsConstructor
 @Data
 public class User implements UserDetails {
 
-    private int id;
+    private Integer id;
     private String username;
     private String password;
-    private String fullName;
+    private String name;
+    private String surname;
     private String role;
     private Collection<? extends  GrantedAuthority> authorities = new HashSet<>();
 
     public UserDto toUserDto() {
-        return new UserDto(id, username, fullName, role);
+        return new UserDto(id, username, name, surname, role);
     }
 
     public static RowMapper<User> getUserMapper() {

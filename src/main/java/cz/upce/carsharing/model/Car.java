@@ -16,6 +16,8 @@ public class Car {
     private Integer pricePerDay;
     private String makeName;
     private String type;
+    private String transmission;
+    private String engine;
     private Integer available;
     private String img;
     private Integer idUser;
@@ -30,6 +32,8 @@ public class Car {
             car.setPricePerDay(rs.getInt("PRICE_PER_DAY"));
             car.setIdUser(rs.getInt("ID_USER"));
             car.setType(rs.getString("TYPE"));
+            car.setTransmission(rs.getString("TRANSMISSION_TYPE"));
+            car.setEngine(rs.getString("ENGINE"));
             car.setAvailable(rs.getInt("AVAILABLE"));
             car.setMakeName(rs.getString("MAKE"));
             car.setIdUser(rs.getInt("ID_USER"));

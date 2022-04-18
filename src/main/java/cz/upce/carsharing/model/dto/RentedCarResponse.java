@@ -1,5 +1,6 @@
-package cz.upce.carsharing.dto;
+package cz.upce.carsharing.model.dto;
 
+import cz.upce.carsharing.model.RentedCar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

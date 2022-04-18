@@ -1,11 +1,16 @@
 package cz.upce.carsharing.controller;
 
-import cz.upce.carsharing.dto.UserDetailsDto;
+import cz.upce.carsharing.model.User;
+import cz.upce.carsharing.model.dto.ChangeRoleRequest;
+import cz.upce.carsharing.model.dto.UserDetailsDto;
 import cz.upce.carsharing.model.Wallet;
+import cz.upce.carsharing.model.dto.UserDto;
 import cz.upce.carsharing.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -17,6 +22,10 @@ public class UserController {
     @GetMapping(value = "/{username}")
     public ResponseEntity<UserDetailsDto> getUserDetails(@PathVariable("username") String username){
         return userService.getUserDetailsByUsername(username);
+    }
+    @GetMapping(value = "/all")
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @PostMapping(value = "/update/{id}")
@@ -38,5 +47,9 @@ public class UserController {
         return userService.getUserWallet(id);
     }
 
+    @PostMapping(value = "/admin/changeRole")
+    public List<UserDto> changeUserRole(@RequestBody ChangeRoleRequest request){
+        return userService.changeUserRole(request);
+    }
 
 }

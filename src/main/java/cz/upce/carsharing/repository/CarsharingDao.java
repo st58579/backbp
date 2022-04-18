@@ -1,11 +1,8 @@
 package cz.upce.carsharing.repository;
 
-import cz.upce.carsharing.dto.*;
+import cz.upce.carsharing.model.*;
+import cz.upce.carsharing.model.dto.*;
 import cz.upce.carsharing.exceptions.DaoException;
-import cz.upce.carsharing.model.Car;
-import cz.upce.carsharing.model.Make;
-import cz.upce.carsharing.model.Type;
-import cz.upce.carsharing.model.Wallet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -30,40 +27,24 @@ public class CarsharingDao {
     }
 
     public CarResponse getUserCars(Integer userId) {
-        String query = "SELECT * FROM AUTO_TYPE WHERE ID_USER = ?";
+        String query = "SELECT * FROM AUTO_TYPE WHERE ID_USER = ? ORDER BY ID_CAR DESC";
         List<Car> foundCars = jdbcTemplate.query(query, new Object[]{userId}, Car.getCarMapper());
         return new CarResponse(foundCars, foundCars.size());
     }
 
 
-    public List<Car> getAllCars() {
-        String query = "SELECT * FROM AUTO_TYPE";
-        List<Car> cars = jdbcTemplate.query(query, Car.getCarMapper());
+    public List<Car> getAllCars(Integer userId) {
+        String query = "SELECT * FROM AUTO_TYPE WHERE ID_USER != ? AND AVAILABLE = 1 ORDER BY ID_CAR DESC";
+        List<Car> cars = jdbcTemplate.query(query, new Object[]{userId}, Car.getCarMapper());
         return cars;
-    }
-
-    public void addCar(CarDto car) {
-        String query = "INSERT INTO CAR " +
-                "(MODEL, YEAR, SEATS_NUMBER, PRICE_PER_DAY, ID_USER, ID_TYPE, ID_MAKE, IMG)" +
-                "VALUES (?,?,?,?,?,?,?,?)";
-        jdbcTemplate.update(
-                query,
-                car.getModel(),
-                car.getYear(),
-                car.getSeatsNumber(),
-                car.getPricePerDay(),
-                car.getIdUser(),
-                car.getIdType(),
-                car.getIdMake(),
-                car.getImg());
     }
 
     public CarResponse getCarsPaginated(int offset, int limit, int idUser) {
         int count = getUserCars(idUser).getCount();
 
         String query = "SELECT * FROM AUTO_TYPE " +
-                "WHERE ID_USER != ? " +
-                "ORDER BY ID_CAR " +
+                "WHERE ID_USER != ? AND AVAILABLE = 1 " +
+                "ORDER BY ID_CAR DESC " +
                 "OFFSET ? ROWS " +
                 "FETCH NEXT ? ROWS ONLY";
         List<Car> foundCars = jdbcTemplate.query(query, new Object[]{idUser, offset, limit}, Car.getCarMapper());
@@ -74,6 +55,7 @@ public class CarsharingDao {
         String query = "SELECT * FROM AUTO_TYPE " +
                 "WHERE ID_MAKE = ? " +
                 "AND ID_USER != ? " +
+                "AND AVAILABLE = 1 " +
                 "ORDER BY ID_CAR " +
                 "OFFSET ? ROWS " +
                 "FETCH NEXT ? ROWS ONLY";
@@ -86,6 +68,7 @@ public class CarsharingDao {
         String query = "SELECT * FROM AUTO_TYPE " +
                 "WHERE ID_TYPE = ? " +
                 "AND ID_USER != ? " +
+                "AND AVAILABLE = 1 " +
                 "ORDER BY ID_CAR " +
                 "OFFSET ? ROWS " +
                 "FETCH NEXT ? ROWS ONLY";
@@ -93,17 +76,37 @@ public class CarsharingDao {
         return new CarResponse(foundCars, foundCars.size());
     }
 
-
     public CarResponse getCarsPaginatedAndFilteredByMakeAndType(CarFilteredRequest request) {
         String query = "SELECT * FROM AUTO_TYPE " +
                 "WHERE ID_MAKE = ? " +
                 "AND ID_TYPE = ? " +
-                "AND ID_USER != ?" +
+                "AND ID_USER != ? " +
+                "AND AVAILABLE = 1 " +
                 "ORDER BY ID_CAR " +
                 "OFFSET ? ROWS " +
                 "FETCH NEXT ? ROWS ONLY";
         List<Car> foundCars = jdbcTemplate.query(query, new Object[]{request.getMakeId(), request.getTypeId(), request.getUserId(), request.getPage(), request.getLimit()}, Car.getCarMapper());
         return new CarResponse(foundCars, foundCars.size());
+    }
+
+    public void addCar(CarDto car) {
+        String query = "INSERT INTO CAR " +
+                "(MODEL, YEAR, SEATS_NUMBER, PRICE_PER_DAY, ID_USER, ID_TYPE, ID_MAKE, IMG, AVAILABLE, TRANSMISSION_TYPE, ENGINE)" +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        jdbcTemplate.update(
+                query,
+                car.getModel(),
+                car.getYear(),
+                car.getSeatsNumber(),
+                car.getPricePerDay(),
+                car.getIdUser(),
+                car.getIdType(),
+                car.getIdMake(),
+                car.getImg(),
+                1,
+                car.getTransmission(),
+                car.getEngine()
+        );
     }
 
     @Transactional
@@ -133,8 +136,27 @@ public class CarsharingDao {
     }
 
     public RentedCarResponse getRentedUserCars(Integer userId) {
-        String query = "SELECT * FROM RENTED_AUTO WHERE USER_RENT = ?";
+        String query = "SELECT * FROM RENTED_AUTO WHERE USER_RENT = ? AND ACTIVE = 1";
         List<RentedCar> rentedCars = jdbcTemplate.query(query,new Object[]{userId}, RentedCar.getRentedCarMapper());
         return new RentedCarResponse(rentedCars, rentedCars.size());
+    }
+
+    public void addType(AddTypeRequest type) {
+        String query = "INSERT INTO TYPE (type) VALUES (?)";
+        jdbcTemplate.update(query, type.getType());
+    }
+
+    public void addMake(AddMakeRequest make) {
+        String query = "INSERT INTO MAKE (make) VALUES (?)";
+        jdbcTemplate.update(query, make.getMake());
+    }
+
+    public void setCarAvailable(Integer carId) {
+        String query = "UPDATE CAR SET AVAILABLE = 1 WHERE ID_CAR = ?";
+        jdbcTemplate.update(query,carId);
+    }
+    public void setCarUnavailable(Integer carId) {
+        String query = "UPDATE CAR SET AVAILABLE = 0 WHERE ID_CAR = ?";
+        jdbcTemplate.update(query,carId);
     }
 }

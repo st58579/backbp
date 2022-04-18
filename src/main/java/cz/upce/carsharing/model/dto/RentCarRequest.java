@@ -1,8 +1,7 @@
-package cz.upce.carsharing.dto;
+package cz.upce.carsharing.model.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.tomcat.jni.Local;
 
 import java.time.LocalDate;
 

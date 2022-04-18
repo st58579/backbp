@@ -1,4 +1,4 @@
-package cz.upce.carsharing.dto;
+package cz.upce.carsharing.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +19,8 @@ public class RentedCar {
     private Integer pricePerDay;
     private String makeName;
     private String type;
+    private String transmission;
+    private String engine;
     private String img;
     private Integer available;
     private LocalDate dateFrom;
@@ -38,6 +40,8 @@ public class RentedCar {
             car.setPricePerDay(rs.getInt("PRICE_PER_DAY"));
             car.setMakeName(rs.getString("MAKE"));
             car.setType(rs.getString("TYPE"));
+            car.setTransmission(rs.getString("TRANSMISSION_TYPE"));
+            car.setEngine(rs.getString("ENGINE"));
             Clob image = rs.getClob("IMG");
             if (image != null){
                 car.setImg(image.getSubString(1, (int) image.length()));

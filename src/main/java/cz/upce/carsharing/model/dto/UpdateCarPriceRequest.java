@@ -1,4 +1,4 @@
-package cz.upce.carsharing.dto;
+package cz.upce.carsharing.model.dto;
 
 import lombok.Data;
 
