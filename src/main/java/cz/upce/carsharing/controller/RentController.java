@@ -20,5 +20,4 @@ public class RentController {
     @PostMapping(value = "/return/{id}")
     public void returnAuto(@PathVariable(value = "id") Integer id) { rentService.returnCar(id); }
 
-
 }

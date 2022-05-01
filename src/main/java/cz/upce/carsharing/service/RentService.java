@@ -1,5 +1,6 @@
 package cz.upce.carsharing.service;
 
+import cz.upce.carsharing.model.UserRentHistory;
 import cz.upce.carsharing.model.dto.RentCarRequest;
 import cz.upce.carsharing.exceptions.RentCarException;
 import cz.upce.carsharing.model.Car;
@@ -32,16 +33,19 @@ public class RentService {
 
         Wallet initiatorWallet = userDao.getUserWallet(request.getUserId());
         Wallet recipientWallet = userDao.getUserWallet(car.getIdUser());
+        boolean discount = userDao.getUserDiscount(request.getUserId());
+        long price = car.getPricePerDay() * days;
 
-        if(initiatorWallet.getBalance() < days * car.getPricePerDay()){
+        if(initiatorWallet.getBalance() < price){
             throw new RentCarException("Insufficient amount on balance!");
         }
 
-        carsharingDao.payToUser((int) (days * car.getPricePerDay()), initiatorWallet, recipientWallet);
+        carsharingDao.payToUser((int) price, discount, initiatorWallet, recipientWallet);
         rentCarDao.rentCar(request);
     }
 
     public void returnCar(Integer id) {
         rentCarDao.returnCar(id);
     }
+
 }

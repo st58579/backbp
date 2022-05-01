@@ -45,14 +45,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/registration")
-    public UserDto register(@RequestBody RegistrationUserRequest request){
-        return userService.register(request);
+    public void register(@RequestBody RegistrationUserRequest request){
+        userService.register(request);
     }
-
-//    @PostMapping(value = "/check")
-//    public AuthenticationResponse check(String token){
-//        if(jwtTokenProvider.validateToken(token)) return new AuthenticationResponse(jwtTokenProvider.getLogin(token), token);
-//        else throw new AuthCheckException("invalid token");
-//    }
-
 }

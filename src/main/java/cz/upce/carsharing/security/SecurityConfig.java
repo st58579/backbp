@@ -27,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String ADMIN_ENDPOINT = "/api/user/**";
     private static final String LOGIN_ENDPOINT = "/api/auth/**";
     private static final String CARSHARING_ENDPOINT = "/api/carsharing/**";
+    private static final String TRANSACTIONS_ENDPOINT = "/api/transactions/**";
     private static final String USER_ENDPOINT = "/api/profile/**";
     private static final String RENT_ENDPOINT = "/api/rent/**";
 
@@ -48,10 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(CARSHARING_ENDPOINT).permitAll()
                 .antMatchers(USER_ENDPOINT).permitAll()
                 .antMatchers(RENT_ENDPOINT).permitAll()
+                .antMatchers(TRANSACTIONS_ENDPOINT).permitAll()
                 .antMatchers(ADMIN_ENDPOINT).hasRole("admin")
                 .anyRequest().authenticated();
 
-        // Add JWT token filter
         httpSecurity.addFilterBefore(
                 jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class);
@@ -63,12 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("HEAD",
                 "GET", "POST", "PUT", "DELETE", "PATCH"));
-        // setAllowCredentials(true) is important, otherwise:
-        // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Authorization"));
-        // setAllowedHeaders is important! Without it, OPTIONS preflight request
-        // will fail with 403 Invalid CORS request
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

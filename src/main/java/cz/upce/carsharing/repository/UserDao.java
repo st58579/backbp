@@ -1,5 +1,6 @@
 package cz.upce.carsharing.repository;
 
+import cz.upce.carsharing.model.LeaseDeal;
 import cz.upce.carsharing.model.dto.ChangeRoleRequest;
 import cz.upce.carsharing.model.dto.RegistrationUserRequest;
 import cz.upce.carsharing.model.dto.UserDetailsDto;
@@ -107,6 +108,12 @@ public class UserDao {
             throw new DaoException("Wallet with ID " + id + " not found");
         }
         return foundUsers.get(0);
+    }
+
+    public boolean getUserDiscount(Integer id){
+        String query = "SELECT * FROM LEASE_DEAL WHERE ID_USER = ?";
+        List<LeaseDeal> deals = jdbcTemplate.query(query,new Object[]{id},LeaseDeal.getLeaseDealMapper());
+        return deals.size() > 10;
     }
 
     public List<UserDto> changeUserRole(ChangeRoleRequest request) {

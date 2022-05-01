@@ -110,11 +110,11 @@ public class CarsharingDao {
     }
 
     @Transactional
-    public void payToUser(Integer amount, Wallet initiatorWallet, Wallet recipientWallet) {
+    public void payToUser(Integer amount, boolean discount, Wallet initiatorWallet, Wallet recipientWallet) {
         String paymentTransaction = "INSERT INTO TRANSACTION (AMOUNT, CREATED_AT, ID_WALLET, ID_DESTINATION, ID_SOURCE) " +
                 "VALUES (?,?,?,?,?)";
-        jdbcTemplate.update(paymentTransaction, -amount, LocalDate.now(), initiatorWallet.getIdWallet(), recipientWallet.getIdWallet(), initiatorWallet.getIdWallet());
-        jdbcTemplate.update(paymentTransaction, amount, LocalDate.now(), recipientWallet.getIdWallet(), recipientWallet.getIdWallet(), initiatorWallet.getIdWallet());
+        jdbcTemplate.update(paymentTransaction, discount ? -amount * 0.9 : amount, LocalDate.now(), initiatorWallet.getIdWallet(), recipientWallet.getIdWallet(), initiatorWallet.getIdWallet());
+        jdbcTemplate.update(paymentTransaction, amount * 0.9, LocalDate.now(), recipientWallet.getIdWallet(), recipientWallet.getIdWallet(), initiatorWallet.getIdWallet());
         String paymentUpdate = "UPDATE WALLET SET BALANCE = ? WHERE ID_WALLET = ?";
         jdbcTemplate.update(paymentUpdate, initiatorWallet.getBalance() - amount, initiatorWallet.getIdWallet());
         jdbcTemplate.update(paymentUpdate, recipientWallet.getBalance() + amount, recipientWallet.getIdWallet());
@@ -137,7 +137,7 @@ public class CarsharingDao {
 
     public RentedCarResponse getRentedUserCars(Integer userId) {
         String query = "SELECT * FROM RENTED_AUTO WHERE USER_RENT = ? AND ACTIVE = 1";
-        List<RentedCar> rentedCars = jdbcTemplate.query(query,new Object[]{userId}, RentedCar.getRentedCarMapper());
+        List<RentedCar> rentedCars = jdbcTemplate.query(query, new Object[]{userId}, RentedCar.getRentedCarMapper());
         return new RentedCarResponse(rentedCars, rentedCars.size());
     }
 
@@ -153,10 +153,11 @@ public class CarsharingDao {
 
     public void setCarAvailable(Integer carId) {
         String query = "UPDATE CAR SET AVAILABLE = 1 WHERE ID_CAR = ?";
-        jdbcTemplate.update(query,carId);
+        jdbcTemplate.update(query, carId);
     }
+
     public void setCarUnavailable(Integer carId) {
         String query = "UPDATE CAR SET AVAILABLE = 0 WHERE ID_CAR = ?";
-        jdbcTemplate.update(query,carId);
+        jdbcTemplate.update(query, carId);
     }
 }

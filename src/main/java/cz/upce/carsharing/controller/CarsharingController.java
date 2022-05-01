@@ -23,21 +23,22 @@ public class CarsharingController {
     }
 
     @PostMapping("/price/update/{carId}")
-    public void updateCarPrice(@PathVariable(value="carId") Integer carId, @RequestBody UpdateCarPriceRequest updateCarPriceRequest){
+    public void updateCarPrice(@PathVariable(value = "carId") Integer carId, @RequestBody UpdateCarPriceRequest updateCarPriceRequest) {
         carsharingService.updateCarPrice(carId, Integer.valueOf(updateCarPriceRequest.getPrice()));
     }
 
     @GetMapping("/user/{id}")
-    public CarResponse getUserCars(@PathVariable(value = "id") Integer userId){
+    public CarResponse getUserCars(@PathVariable(value = "id") Integer userId) {
         return carsharingService.getUserCars(userId);
     }
+
     @GetMapping("/rented/{id}")
-    public RentedCarResponse getRentedUserCars(@PathVariable(value = "id") Integer userId){
+    public RentedCarResponse getRentedUserCars(@PathVariable(value = "id") Integer userId) {
         return carsharingService.getRentedUserCars(userId);
     }
 
     @GetMapping("/all/{id}")
-    public CarResponse getAllCarsPaginated(@PathVariable(value ="id") Integer userId) {
+    public CarResponse getAllCarsPaginated(@PathVariable(value = "id") Integer userId) {
         List<Car> cars = carsharingService.getAllCars(userId);
         return new CarResponse(cars, cars.size());
     }
@@ -63,17 +64,17 @@ public class CarsharingController {
     }
 
     @PostMapping(value = "/car/update/availability")
-    public Car updateCarAvailability(@RequestBody UpdateCarAvailabilityRequest request){
+    public Car updateCarAvailability(@RequestBody UpdateCarAvailabilityRequest request) {
         return carsharingService.updateCarAvailability(request);
     }
 
     @PostMapping(value = "/type/add")
-    public void addType(@RequestBody AddTypeRequest type){
+    public void addType(@RequestBody AddTypeRequest type) {
         carsharingService.addType(type);
     }
 
     @PostMapping(value = "/make/add")
-    public void addMake(@RequestBody AddMakeRequest make){
+    public void addMake(@RequestBody AddMakeRequest make) {
         carsharingService.addMake(make);
     }
 }

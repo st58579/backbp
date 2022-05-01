@@ -22,13 +22,12 @@ public class UserService{
     private final UserDao userDao;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserDto register(RegistrationUserRequest user) {
+    public void register(RegistrationUserRequest user) {
         if(userDao.checkIsUserExistByUsername(user.getUsername())){
             throw new ValidationException("Username already exists!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.addNewUser(user);
-        return userDao.getUserByUsername(user.getUsername()).toUserDto();
     }
 
     public UserDto getUserById(Integer userId) {
